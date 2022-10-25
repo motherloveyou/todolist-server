@@ -67,7 +67,7 @@ Object.keys(routerConfig).forEach(module => {
       try {
         await instance[action].call(instance, req, res)
       } catch (error) {
-        console.log(error)
+        throw new Error(error)
       }
     })
   })
