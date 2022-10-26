@@ -10,15 +10,13 @@ class TodolistController {
   // 添加list
   async add (req, res) {
     const { userId, content } = req.body
-    const item = await this.todolistModel.add(content)
-    await this.userModel.addTodolistId(userId, item[0]._id)
+    const item = await this.todolistModel.add(userId, content)
     res.send(resReturn())
   }
   // 删除list
   async delete (req, res) {
-    const { userId, todolistId } = req.body
+    const { todolistId } = req.body
     await this.todolistModel.delete(todolistId)
-    await this.userModel.deleteTodolistId(userId, todolistId)
     res.send(resReturn())
   }
   // 修改list
@@ -30,9 +28,8 @@ class TodolistController {
   // 查询list
   async query (req, res) {
     const { userId, searchContent } = req.query
-    const todolistIdArray = await this.userModel.getTodolistId(userId)
     const pattern = searchContent ? new RegExp(['', ...searchContent, ''].join('.*'), 'i') : /.*/
-    const result = await this.todolistModel.query(todolistIdArray, pattern)
+    const result = await this.todolistModel.query(userId, pattern)
     res.send(resReturn(result))
   }
 }

@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const BaseModel = require('./base')
 
 class TodolistModel extends BaseModel {
@@ -6,6 +7,10 @@ class TodolistModel extends BaseModel {
   }
   getSchema () {
     return {
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      },
       content: {
         type: String,
         required: true
@@ -17,8 +22,9 @@ class TodolistModel extends BaseModel {
     }
   }
   // 插入list
-  add (content) {
+  add (userId, content) {
     return this.model.insertMany({
+      userId,
       content,
       done: false
     })
@@ -32,8 +38,8 @@ class TodolistModel extends BaseModel {
     return this.model.updateOne({ _id: todolistId }, { $set: { content, done } })
   }
   // 查询list
-  query (todolistIdArray, pattern) {
-    return this.model.find({ _id: { $in: todolistIdArray }, content: pattern })
+  query (userId, pattern) {
+    return this.model.find({ userId, content: pattern })
   }
 }
 
