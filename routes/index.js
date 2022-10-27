@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const { jwtVerify } = require('../utils')
 
 const TodolistController = require('../controllers/todolist')
 const UserlistController = require('../controllers/user')
@@ -50,9 +51,9 @@ const routerConfig = {
       path: '/login'
     },
     {
-      action: 'logout',
-      method: 'post',
-      path: '/logout'
+      action: 'getUserInfo',
+      method: 'get',
+      path: '/getUserInfo'
     }
   ]
 }
@@ -62,13 +63,9 @@ Object.keys(routerConfig).forEach(module => {
   routes.forEach(route => {
     const { prefix, controller } = INTERFACE_CONFIG[module]
     const { action, method, path } = route
-    router[method](prefix + path, async (req, res) => {
+    router[method](prefix + path, async (req, res, next) => {
       const instance = new controller()
-      try {
-        await instance[action].call(instance, req, res)
-      } catch (error) {
-        throw new Error(error)
-      }
+      await instance[action].call(instance, req, res)
     })
   })
 })

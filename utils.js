@@ -15,7 +15,33 @@ const resReturn = (data, error, errDesc) => {
   }
 }
 
+const jwt = require('jsonwebtoken')
+const secretKey = 'todolist_server_zoucaiyuan'
+const expiresIn = 20
+
+// 生成token
+const jwtSign = (data) => {
+  return jwt.sign(data, secretKey, { expiresIn })
+}
+
+//验证token
+const jwtVerify = async (req, res) => {
+  const { access_token } = req.headers
+  try {
+    const { account, password } = jwt.verify(access_token, secretKey)
+    // 返回access_token对应的用户信息
+    const userModel = require('./models/user')
+    const item = await getModelInstance(userModel).getAccountInfo(account, password)
+    return item
+  } catch (error) {
+    res.send(resReturn(null, 1, '无效token'))
+    console.log(error)
+  }
+}
+
 module.exports = {
   getModelInstance,
-  resReturn
+  resReturn,
+  jwtSign,
+  jwtVerify
 }

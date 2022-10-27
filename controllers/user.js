@@ -1,5 +1,5 @@
 const userModel = require('../models/user')
-const { getModelInstance, resReturn } = require('../utils')
+const { getModelInstance, resReturn, jwtSign, jwtVerify } = require('../utils')
 
 class UserController {
   constructor () {
@@ -23,12 +23,18 @@ class UserController {
   // 登录
   async login (req, res) {
     const { account, password } = req.body
-    const info = await this.userModel.getAccountInfo(account, password)
-    if (!info?._id) {
+    const item = await this.userModel.getAccountInfo(account, password)
+    if (!item?._id) {
       res.send(resReturn(null, 1, '账号或密码错误'))
       return
     }
-    res.send(resReturn({ userId: info._id, account }))
+    const access_token = jwtSign({ account, password })
+    res.send(resReturn({ userId: item._id, account, access_token }))
+  }
+  //  根据access_token查询用户信息
+  async getUserInfo (req, res, next) {
+    const { account } = await jwtVerify(req, res, next)
+    res.send(resReturn(account))
   }
 }
 
