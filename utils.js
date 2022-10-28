@@ -17,7 +17,7 @@ const resReturn = (data, error, errDesc) => {
 
 const jwt = require('jsonwebtoken')
 const secretKey = 'todolist_server_zoucaiyuan'
-const expiresIn = 20
+const expiresIn = 3 * 24 * 60 * 60  // token有效时间  单位秒
 
 // 生成token
 const jwtSign = (data) => {
@@ -34,7 +34,7 @@ const jwtVerify = async (req, res) => {
     const item = await getModelInstance(userModel).getAccountInfo(account, password)
     return item
   } catch (error) {
-    res.send(resReturn(null, 1, '无效token'))
+    res.send(resReturn(null, 1, '无效token，请重新登录'))
     console.log(error)
   }
 }
