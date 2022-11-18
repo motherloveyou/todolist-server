@@ -1,16 +1,16 @@
 {
-  "name": "todolist-server",
+  "name": "temp-server",
   "version": "0.0.0",
-  "private": true,
+  "main": "index.js",
   "scripts": {
-    "dev": "nodemon ./bin/www"
+    "upload": "rm -rf ./dist && tsc && cd ./dist && zip -r ./dist.zip ./* && aws lambda update-function-code --region ap-southeast-1 --function-name zcy-todo --zip-file fileb://dist.zip && rm dist.zip && cd .."
   },
   "dependencies": {
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
-    "express": "~4.16.1",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.6.5",
-    "morgan": "~1.9.1"
+    "aws-sdk": "^2.1257.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "js-base64": "^3.7.3",
+    "typescript": "^4.9.3"
   }
 }
