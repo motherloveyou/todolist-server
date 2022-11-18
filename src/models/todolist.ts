@@ -1,5 +1,5 @@
 import BaseModel from './base';
-import { ScanInput } from '../type/DynamoDB'
+import { PutItemInput, ScanInput } from '../type/DynamoDB'
 
 class TodolistModel extends BaseModel {
     queryList(params: ScanInput) {
@@ -12,6 +12,17 @@ class TodolistModel extends BaseModel {
                 }
             });
         });
+    }
+    addList(params: PutItemInput) {
+        return new Promise(resolve => {
+            this.docClient.put(params, (err, data) => {
+                if (err) {
+                    resolve(err);
+                } else {
+                    resolve(data);
+                }
+            })
+        })
     }
 }
 
