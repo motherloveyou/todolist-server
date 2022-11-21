@@ -1,8 +1,10 @@
 export interface LamadaEvent {
+    queryStringParameters?: any;
     requestContext: {
         http: {
-            method: string
-            path: string
-        }
-    }
+            method: string;
+            path: string;
+        };
+    };
+    body?: string;
 }

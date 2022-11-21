@@ -1,3 +1,3 @@
 import AWS from 'aws-sdk';
 
-export default AWS
+export default AWS;

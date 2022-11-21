@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "main": "index.js",
   "scripts": {
-    "upload": "rm -rf ./dist && tsc && cd ./dist && zip -r ./dist.zip ./* && aws lambda update-function-code --region ap-southeast-1 --function-name zcy-todo --zip-file fileb://dist.zip && rm dist.zip && cd .."
+    "build": "rm -rf ./dist && tsc && cd ./dist && zip -r ./dist.zip ./* && aws lambda update-function-code --region ap-southeast-1 --function-name zcy-todo --zip-file fileb://dist.zip && rm dist.zip && cd .."
   },
   "dependencies": {
     "aws-sdk": "^2.1257.0"

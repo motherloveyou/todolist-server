@@ -1,6 +1,6 @@
 import { resReturn } from './utils/tools';
 import routes from './router';
-import { LamadaEvent } from './type/Lamada'
+import { LamadaEvent } from './type/Lamada';
 
 const lambdaHandler = async (event: LamadaEvent) => {
     const { method: m, path: p } = event.requestContext.http;
@@ -10,12 +10,12 @@ const lambdaHandler = async (event: LamadaEvent) => {
         for (let item of api) {
             const { action, method, path } = item;
             if (method === m && prefix + path === p) {
-                const res = await instance[action].call(instance);
+                const res = await instance[action].call(instance, event);
                 return res;
             }
         }
     }
-    return resReturn({}, 404, 'method or path not match')
+    return resReturn({}, 404, 'method or path not match');
 };
 
-exports.handler = lambdaHandler
+exports.handler = lambdaHandler;

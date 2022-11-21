@@ -41,11 +41,6 @@ const routes = {
                 action: 'login',
                 method: 'POST',
                 path: '/login'
-            },
-            {
-                action: 'getUserInfo',
-                method: 'GET',
-                path: '/getUserInfo'
             }
         ]
     }
