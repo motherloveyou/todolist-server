@@ -1,31 +1,19 @@
-import BaseModel from './base'
-import { PutItemInput, GetItemInput } from '../type/DynamoDB';
+import BaseModel from './base';
+import { PutItemInput, QueryInput } from '../type/DynamoDB';
 
 class UserModel extends BaseModel {
     // 插入用户数据
     addUser(params: PutItemInput) {
         return new Promise((resolve, reject) => {
-            this.docClient.put(params, (err, data) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(data);
-                }
-            });
+            this.docClient.put(params, (err, data) => (err ? reject(err) : resolve(data)));
         });
     }
-    // 获取用户数据
-    getUserInfo(params: GetItemInput) {
+    // 查询用户数据
+    queryUserInfo(params: QueryInput) {
         return new Promise((resolve, reject) => {
-            this.docClient.get(params, (err, data) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(data);
-                }
-            });
+            this.docClient.query(params, (err, data) => (err ? reject(err) : resolve(data.Items)));
         });
     }
 }
 
-export default  UserModel
+export default UserModel;

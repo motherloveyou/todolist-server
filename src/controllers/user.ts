@@ -1,13 +1,13 @@
 import UserModel from '../models/user';
-import { getModelInstance, resReturn } from '../utils/tools';
+import { getModelInstance, resReturn, jwtSign } from '../utils/tools';
 import { LamadaEvent } from '../type/Lamada';
 
 class UserController {
     userModel: any;
-    defaultParams: Record<string, unknown>;
+    tableParams: Record<string, unknown>;
     constructor() {
         this.userModel = getModelInstance(UserModel);
-        this.defaultParams = { TableName: 'zcy-user' }
+        this.tableParams = { TableName: 'zcy-user' };
     }
     // 注册
     async register(event: LamadaEvent) {
@@ -15,12 +15,20 @@ class UserController {
         if (password !== checkPassword) {
             return resReturn(undefined, 1, '两次密码输入不一致');
         }
-        const params = {
-            ...this.defaultParams,
-            Item: { id: Date.now(), account, password }
+        const checkParams = {
+            ...this.tableParams,
+            IndexName: 'check-repeat-index',
+            KeyConditionExpression: 'account = :ac',
+            ExpressionAttributeValues: { ':ac': account }
         };
         try {
-            await this.userModel.addUser(params);
+            const res = await this.userModel.queryUserInfo(checkParams);
+            if (res[0]) return resReturn(undefined, 1, '账号已存在');
+            const addParams = {
+                ...this.tableParams,
+                Item: { id: Date.now(), account, password }
+            };
+            await this.userModel.addUser(addParams);
             return resReturn(undefined);
         } catch (err) {
             return resReturn(undefined, err.statusCode, err.message);
@@ -30,12 +38,18 @@ class UserController {
     async login(event: LamadaEvent) {
         const { account, password } = JSON.parse(event.body);
         const params = {
-            ...this.defaultParams,
-            Key: { id: 1669022819032 }
+            ...this.tableParams,
+            IndexName: 'login-user',
+            KeyConditionExpression: 'account = :ac and password = :pwd',
+            ExpressionAttributeValues: { ':ac': account, ':pwd': password }
         };
         try {
-            const res = await this.userModel.getUserInfo(params);
-            return resReturn(res);
+            const res = await this.userModel.queryUserInfo(params);
+            if (res[0]) {
+                const access_token = jwtSign({ account, password });
+                return resReturn({ access_token });
+            }
+            return resReturn(undefined, 1, '账号或密码错误');
         } catch (err) {
             return resReturn(undefined, err.statusCode, err.message);
         }
