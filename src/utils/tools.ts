@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { LamadaEvent } from '../type/Lamada';
 import UserModel from '../models/user';
 
-export const resReturn = (data: any, error?: number, msg?: string) => {
+export const resReturn = (data: any, error?: number, msg = 'success') => {
     return {
         error: error || 0,
         msg,
@@ -29,7 +29,7 @@ export const jwtSign = (data: any) => {
 export const jwtVerify = (event: LamadaEvent): any => {
     return new Promise(async (resolve, reject) => {
         if (!event.headers.access_token) {
-            reject({ statusCode: 1, message: '缺少token' });
+            reject({ message: '缺少token' });
         }
         const { access_token } = event.headers;
         try {
@@ -44,7 +44,7 @@ export const jwtVerify = (event: LamadaEvent): any => {
             const res = await getModelInstance(UserModel).queryUserInfo(params);
             resolve(res[0]);
         } catch (error) {
-            reject({ statusCode: 1, message: '无效token，请重新登录' });
+            reject({ message: '无效token，请重新登录' });
         }
     });
 };

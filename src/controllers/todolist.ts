@@ -19,9 +19,9 @@ class TodolistController {
                 Item: { id: Date.now(), userId, content, done: false }
             };
             await this.todolistModel.addList(params);
-            return resReturn(undefined);
+            return resReturn(params.Item);
         } catch (err) {
-            return resReturn(undefined, err.statusCode, err.message);
+            return resReturn(undefined, 1, err.message);
         }
     }
     // 删除list
@@ -36,7 +36,7 @@ class TodolistController {
             await this.todolistModel.deleteList(params);
             return resReturn(undefined);
         } catch (err) {
-            return resReturn(undefined, err.statusCode, err.message);
+            return resReturn(undefined, 1, err.message);
         }
     }
     // 修改list
@@ -51,9 +51,9 @@ class TodolistController {
                 ExpressionAttributeValues: { ':c': content, ':d': done }
             };
             await this.todolistModel.modifyList(params);
-            return resReturn(undefined);
+            return resReturn({ id, content, done });
         } catch (err) {
-            return resReturn(undefined, err.statusCode, err.message);
+            return resReturn(undefined, 1, err.message);
         }
     }
     // 查询list
@@ -71,7 +71,7 @@ class TodolistController {
             const res = await this.todolistModel.queryList(params, pattern);
             return resReturn(res);
         } catch (err) {
-            return resReturn(undefined, err.statusCode, err.message);
+            return resReturn(undefined, 1, err.message);
         }
     }
 }

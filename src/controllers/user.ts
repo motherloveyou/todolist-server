@@ -31,7 +31,7 @@ class UserController {
             await this.userModel.addUser(addParams);
             return resReturn(undefined);
         } catch (err) {
-            return resReturn(undefined, err.statusCode, err.message);
+            return resReturn(undefined, 1, err.message);
         }
     }
     // 登录
@@ -51,7 +51,7 @@ class UserController {
             }
             return resReturn(undefined, 1, '账号或密码错误');
         } catch (err) {
-            return resReturn(undefined, err.statusCode, err.message);
+            return resReturn(undefined, 1, err.message);
         }
     }
 }
